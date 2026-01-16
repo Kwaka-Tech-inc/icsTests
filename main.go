@@ -18,6 +18,46 @@ func formatICalTime(t time.Time) string {
 	return t.UTC().Format("20060102T150405Z")
 }
 
+func getMelodieType() string {
+	melodieTypes := []string{"Report of Findings", "New Patient Consultation",
+		"Cox Decompression",
+		"Complete Report - Cox Technic",
+		"Progress Report - Regular adjustment",
+		"Progress Report - Cox technic",
+		"Progress Exam",
+		"New Patient Consultation - Baby/Child (Newborn to 12 years old)",
+		"Complete Report - Regular adjustment",
+		"Regular Adjustment",
+		"Regular Adjustment - At home",
+		"Complete Exam", "Cranial Adjusting (C.A.T.S.)", "Baby - Regular Adjustment"}
+
+	r := rand.New(rand.NewSource(time.Now().UnixNano()))
+	return melodieTypes[r.Intn(len(melodieTypes))]
+}
+
+func getFrancoiTypes() string {
+	francoisTypes := []string{
+		"Réévaluation (S1)",
+		"Ajustement chiropratique - Table COX (S3)",
+		"Déplacement (suivi à la maison)",
+		"Réévaluation (-18 ans) (S1)",
+		"Rapport 2",
+		"Évaluation initiale (-18 ans) (S1)",
+		"Ajustement chiropratique (-18 ans)",
+		"Rapport 1 (S1)",
+		"Évaluation initiale (S1)",
+		"Ajustement chiropratique reg",
+		"Phase OS - ajustement chiropratique",
+		"Ajustement chiropratique",
+		"Phase initale - ajustement chiropratique",
+		"Phase correction - ajustement chiropratique",
+		"Analyses CLA Insight (S1)",
+		"Consultation sans frais",
+	}
+	r := rand.New(rand.NewSource(time.Now().UnixNano()))
+	return francoisTypes[r.Intn(len(francoisTypes))]
+}
+
 func connectToKSMDB() (*pgxpool.Pool, error) {
 	var connectStr = "postgres://goServer:goServer123@localhost:5431/postgres?sslmode=disable"
 	pool, err := pgxpool.New(context.Background(), connectStr)
@@ -92,7 +132,7 @@ func generateFile(fileName string) {
 	f.WriteString("CALSCALE:GREGORIAN\n")
 
 	for current := startOfDay; current.Before(endOfDay); current = current.Add(interval) {
-		summry := getRandomFName() + " " + getLastRandomLName() + " (" + getAPTType() + ")"
+		summry := getRandomFName() + " " + getLastRandomLName() + " (" + getFrancoiTypes() + ")"
 		end := current.Add(interval)
 		f.WriteString("BEGIN:VEVENT\n")
 		f.WriteString(fmt.Sprintf("UID:%d@kwaka.ca\n", current.UnixNano()))
