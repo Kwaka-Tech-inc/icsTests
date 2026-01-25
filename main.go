@@ -20,6 +20,10 @@ func formatICalTime(t time.Time) string {
 
 func getMelodieType() string {
 	melodieTypes := []string{"Report of Findings", "New Patient Consultation",
+
+		"Cox Decompression",
+		"Cox Decompression",
+		"Cox Decompression",
 		"Cox Decompression",
 		"Complete Report - Cox Technic",
 		"Progress Report - Regular adjustment",
@@ -132,7 +136,7 @@ func generateFile(fileName string) {
 	f.WriteString("CALSCALE:GREGORIAN\n")
 
 	for current := startOfDay; current.Before(endOfDay); current = current.Add(interval) {
-		summry := getRandomFName() + " " + getLastRandomLName() + " (" + getFrancoiTypes() + ")"
+		summry := getRandomFName() + " " + getLastRandomLName() + " (" + getMelodieType() + ")"
 		end := current.Add(interval)
 		f.WriteString("BEGIN:VEVENT\n")
 		f.WriteString(fmt.Sprintf("UID:%d@kwaka.ca\n", current.UnixNano()))
