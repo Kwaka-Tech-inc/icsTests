@@ -15,7 +15,11 @@ var Pool *pgxpool.Pool
 var fNames []string
 
 func formatICalTime(t time.Time) string {
-	return t.UTC().Format("20060102T150405Z")
+	loc, err := time.LoadLocation("America/Toronto")
+	if err == nil {
+		t = t.In(loc)
+	}
+	return t.Format("20060102T150405")
 }
 
 func getMelodieType() string {
@@ -119,7 +123,10 @@ func getRandomFName() string {
 }
 
 func generateFile(fileName string) {
-	location := time.Now().Location()
+	location, err := time.LoadLocation("America/Toronto")
+	if err != nil {
+		location = time.Now().Location()
+	}
 	startOfDay := time.Date(time.Now().Year(), time.Now().Month(), time.Now().Day(), 8, 0, 0, 0, location)
 	endOfDay := time.Date(time.Now().Year(), time.Now().Month(), time.Now().Day(), 17, 0, 0, 0, location)
 
@@ -140,9 +147,9 @@ func generateFile(fileName string) {
 		end := current.Add(interval)
 		f.WriteString("BEGIN:VEVENT\n")
 		f.WriteString(fmt.Sprintf("UID:%d@kwaka.ca\n", current.UnixNano()))
-		f.WriteString(fmt.Sprintf("DTSTAMP:%s\n", formatICalTime(time.Now())))
-		f.WriteString(fmt.Sprintf("DTSTART:%s\n", formatICalTime(current)))
-		f.WriteString(fmt.Sprintf("DTEND:%s\n", formatICalTime(end)))
+		f.WriteString(fmt.Sprintf("DTSTAMP;TZID=America/Toronto:%s\n", formatICalTime(time.Now())))
+		f.WriteString(fmt.Sprintf("DTSTART;TZID=America/Toronto:%s\n", formatICalTime(current)))
+		f.WriteString(fmt.Sprintf("DTEND;TZID=America/Toronto:%s\n", formatICalTime(end)))
 		f.WriteString(fmt.Sprintf("SUMMARY:%s\n", summry))
 		f.WriteString("STATUS:CONFIRMED\n")
 		f.WriteString("DESCRIPTION:15-minute slot\n")
