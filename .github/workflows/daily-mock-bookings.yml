@@ -1,0 +1,30 @@
+name: Daily Mock Bookings
+
+on:
+  schedule:
+    - cron: "0 10 * * *" # Runs every day at 7:00 AM UTC
+  workflow_dispatch: # Also allows manual trigger from GitHub UI
+
+jobs:
+  generate:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Set up Go
+        uses: actions/setup-go@v5
+        with:
+          go-version: "1.22"
+
+      - name: Run mock generator
+        run: make run
+
+      - name: Commit and push if changed
+        run: |
+          git config user.name  "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add .
+          git diff --staged --quiet || git commit -m "chore: refresh mock bookings $(date +'%Y-%m-%d')"
+          git push
