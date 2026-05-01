@@ -1,0 +1,28 @@
+name: Daily ICS Update
+
+on:
+  schedule:
+    - cron: '0 10 * * *'  # 5am EST (UTC-5)
+  workflow_dispatch:
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-go@v5
+        with:
+          go-version-file: go.mod
+
+      - name: Run
+        run: make run
+
+      - name: Commit changes
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add *.ics
+          git diff --cached --quiet || git commit -m "chore: daily ics update $(date -u +'%Y-%m-%d')"
+          git push
