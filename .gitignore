@@ -1,0 +1,28 @@
+# Environment files
+.env
+
+# macOS system files
+.DS_Store
+
+# Go build artifacts
+/bin/
+/bin/*
+/build/
+/dist/
+*.exe
+*.test
+*.out
+
+# Vendor folder (if you vendor deps)
+vendor/
+
+# IDE/editor folders
+.vscode/
+.idea/
+*.swp
+
+# Logs
+*.log
+
+bin/kwaka_space_manager_server
+CLAUDE.md
